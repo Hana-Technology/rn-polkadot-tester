@@ -1,5 +1,5 @@
 {
-  "name": "PolkadotTester",
+  "name": "rn-polkadot-tester",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,6 +10,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@polkadot/api": "^9.10.2",
+    "@polkadot/extension-chains": "^0.44.6",
+    "@polkadot/extension-inject": "^0.44.6",
     "react": "18.1.0",
     "react-native": "0.70.6"
   },

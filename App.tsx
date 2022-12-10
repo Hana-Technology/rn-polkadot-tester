@@ -8,7 +8,7 @@
  * @format
  */
 
-import React, {type PropsWithChildren} from 'react';
+import React, {useEffect, type PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,6 +26,9 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import type {ApiPromise} from '@polkadot/api';
+import {cryptoWaitReady} from '@polkadot/util-crypto';
 
 const Section: React.FC<
   PropsWithChildren<{
@@ -63,6 +66,33 @@ const App = () => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  useEffect(() => {
+    cryptoWaitReady().then(() => {
+      import('@polkadot/api').then(api => {
+        const {WsProvider, ApiPromise} = api;
+
+        const provider = new WsProvider('wss://rpc.polkadot.io');
+        const apiPromise = new ApiPromise({provider});
+
+        apiPromise.isReady.then(() => {
+          console.log('API is ready');
+
+          apiPromise.query.system
+            .account('16ZL8yLyXv3V3L3z9ofR1ovFLziyXaN1DPq4yffMAZ9czzBD')
+            .then(balance => {
+              console.log(`Balance is ${balance}`);
+            });
+        });
+      });
+
+      import('@polkadot/keyring').then(keyring => {
+        const {Keyring} = keyring;
+
+        const kr = new Keyring({type: 'sr25519'});
+      });
+    });
+  }, []);
 
   return (
     <SafeAreaView style={backgroundStyle}>
